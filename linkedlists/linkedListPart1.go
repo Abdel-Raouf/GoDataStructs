@@ -24,7 +24,7 @@ func main() {
 	john := Student{10, 100, "John", &kyle}
 
 	debrah := Teacher{24, 185, "Debrah", &john}
-	
+
 
 
 }
