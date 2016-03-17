@@ -25,6 +25,6 @@ func main() {
 
 	debrah := Teacher{24, 185, "Debrah", &john}
 
-
+	fmt.Println(debrah.name, john.name, kyle.name)
 
 }
