@@ -27,8 +27,8 @@ func reverse(curr * student) *student {
 }
 
 func main() {
-	students := new(student)
-	students.next = nil
+	var students *student
+	students = nil
 
   if len(os.Args) < 2{
     fmt.Println("There is no file")
@@ -48,21 +48,22 @@ func main() {
 		ts := &student{
       name: td[0],
       ssn: td[2],
-      next: students.next,
+      next: students,
     }
     ts.age, _ = strconv.Atoi(td[1])
 
-		students.next = ts
+		students = ts
 	}
 
 	fmt.Println("Original----")
-  for s := students.next; s != nil; s = s.next {
+
+  for s := students; s != nil; s = s.next {
 		fmt.Println(s.name, s.age, s.ssn)
 	}
 
   students = reverse(students)
 
-  for s := students; s.next != nil; s = s.next {
+  for s := students; s != nil; s = s.next {
     fmt.Println(s.name, s.age, s.ssn)
   }
 }
