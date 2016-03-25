@@ -1,44 +1,40 @@
 package main
 
 import (
-    "fmt"
-    "github.com/julienschmidt/httprouter"
-    "net/http"
-    "log"
-    "text/template"
-    "os"
+  "net/http"
+  "fmt"
+  "os"
+  "io"
+  "path/filepath"
 )
 
-type Node struct {
-  Header string
-  Footer string
-  Body string
-}
-
-func (me Node) PrintAll() string {
-  return me.Header + me.Body + me.Footer
-}
-
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-
-    tpl, err := template.ParseFiles(ps.ByName("index"))
-    if err != nil{
-      os.Exit(0)
-    }
-
-    err = tpl.Execute(w, Node{
-      Header: "This is my Header",
-      Body: "This is my Body",
-      Footer: "This is my Footer",
-    })
-    if err != nil {
-      os.Exit(0)
-    }
-}
 
 func main() {
-    router := httprouter.New()
-    router.GET("/:index", Hello)
+  fmt.Println("TEMP DIR:", os.TempDir())
+  http.ListenAndServe(":9000", http.HandlerFunc(func (res http.ResponseWriter, req *http.Request){
+    if req.Method == "POST"{
+      src, _, err := req.FormFile("my-file")
+      if err != nil{
+        http.Error(res, err.Error(), 500)
+        return
+      }
 
-    log.Fatal(http.ListenAndServe(":8080", router))
+      defer src.Close()
+
+      dst, err := os.Create(filepath.Join(os.TempDir(), "file.txt"))
+      if err != nil{
+        http.Error(res, err.Error(), 500)
+        return
+      }
+      defer dst.Close()
+      io.Copy(dst, src)
+    }
+    res.Header().Set("Content-Type", "text/html")
+    io.WriteString(res, `
+      <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="my-file">
+      <input type="submit">
+      </form>
+      `)
+  }))
 }
