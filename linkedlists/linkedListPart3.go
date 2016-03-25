@@ -62,7 +62,8 @@ func main() {
 	}
 
   students = reverse(students)
-
+	
+  fmt.Println("\nReversed----")
   for s := students; s != nil; s = s.next {
     fmt.Println(s.name, s.age, s.ssn)
   }
