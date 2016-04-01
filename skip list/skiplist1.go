@@ -5,6 +5,11 @@ import (
 )
 
 
+type node struct {
+
+}
+
+
 func main() {
-  fmt.Println("here","hello")
+
 }
