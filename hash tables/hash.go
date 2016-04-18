@@ -51,22 +51,34 @@ func getLength(vals []*node) int {
   return count
 }
 
-func insertTable(myTable *table, myVal string)  {
+
+func reSize(myTable *table) *table {
+  newTable := createTable(myTable.length * 2)
+  for i := range myTable.list{
+    for item := myTable.list[i]; item != nil; item = item.next{
+      newTable = insertTable(newTable, item.val)
+    }
+  }
+  return newTable
+}
+
+
+func insertTable(myTable *table, myVal string) *table {
   if getLength(myTable.list) == (myTable.length - 1) {
-    fmt.Println("we've filled the list") // TODO: resize table here
+    myTable = reSize(myTable)
   }else{
     location := findSpot(myTable.length, myVal)
     myTable.list[location] = insertNode(myTable.list[location], myVal)
   }
-  return
+  return myTable
 }
 
 func main() {
   myTal := createTable(5)
 
   for _, word := range os.Args[1:] {
-    insertTable(myTal, word)
+    myTal = insertTable(myTal, word)
   }
-  fmt.Println(myTal)
 
+  fmt.Println(myTal)
 }
