@@ -8,7 +8,6 @@ import (
 type node struct {
   next *node
   val string
-  timesSeen int
 }
 
 type table struct {
@@ -28,7 +27,7 @@ func findSpot(length int, myVal string) int {
     for _, i := range myVal {
       insertLoc += int(i)
     }
-    return insertLoc % length
+    return (insertLoc % length)
 }
 
 func insertNode(myNode *node, myVal string) *node {
@@ -37,12 +36,7 @@ func insertNode(myNode *node, myVal string) *node {
     val : myVal,
   }
   if myNode != nil{
-    for newNode.next = myNode; newNode.next != nil; newNode.next = newNode.next.next {
-      if newNode.next.val == myVal{
-        newNode.next.timesSeen++
-        return nil
-      }
-    }
+    newNode.next = myNode
   }
   return newNode
 }
@@ -57,12 +51,11 @@ func getLength(vals []*node) int {
   return count
 }
 
-
 func reSize(myTable *table) *table {
   newTable := createTable(myTable.length * 2)
   for i := range myTable.list{
-    for item := myTable.list[i]; item != nil; item = item.next{
-      newTable = insertTable(newTable, item.val)
+    for tableColumn := myTable.list[i]; tableColumn != nil; tableColumn = tableColumn.next{
+      insertTable(newTable, tableColumn.val)
     }
   }
   return newTable
@@ -73,23 +66,9 @@ func insertTable(myTable *table, myVal string) *table {
     myTable = reSize(myTable)
   }else{
     location := findSpot(myTable.length, myVal)
-    newNode := insertNode(myTable.list[location], myVal)
-    if newNode != nil{
-      myTable.list[location] = newNode
-    }
+    myTable.list[location] = insertNode(myTable.list[location], myVal)
   }
   return myTable
-}
-
-func printTable(myTable *table){
-  for i := 0; i < len(myTable.list); i++{
-    fmt.Println(i)
-    for temp := myTable.list[i]; temp != nil; temp = temp.next{
-      fmt.Printf("%s %d", temp.val, temp.timesSeen)
-
-    }
-    fmt.Printf("\n")
-  }
 }
 
 func main() {
@@ -98,8 +77,5 @@ func main() {
   for _, word := range os.Args[1:] {
     myTal = insertTable(myTal, word)
   }
-  printTable(myTal)
-  fmt.Println("Hello World")
-
-  fmt.Println(myTal)
+  
 }
